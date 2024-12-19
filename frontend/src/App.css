@@ -277,6 +277,14 @@ audio {
   padding: 0 10px;
 }
 
+.transcript.visible {
+  height: 150px;
+}
+
+.transcript.hidden {
+  height: 0;
+}
+
 .transcript-container button {
   width: 100%;
   height: 36px;
