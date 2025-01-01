@@ -1,15 +1,4 @@
-interface Bear {
-  type: string;
-  coat: string;
-  size: string;
-  habitat: string;
-  lifespan: string;
-  diet: string;
-}
-
-interface BearTableProps {
-  bears: Bear[];
-}
+import type { BearTableProps } from '../types/bear.ts';
 
 const headers: string[] = [
   'Bear Type',
