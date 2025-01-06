@@ -27,6 +27,12 @@ function Comment(): React.JSX.Element {
     setVisible(!isVisible);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
+    if (e.key === 'Enter') {
+      toggleCommentsButton();
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
 
@@ -45,6 +51,7 @@ function Comment(): React.JSX.Element {
         tabIndex={0}
         role="button"
         onClick={toggleCommentsButton}
+        onKeyDown={handleKeyDown}
       >
         {isVisible ? 'Hide comments' : 'Show comments'}
       </div>
