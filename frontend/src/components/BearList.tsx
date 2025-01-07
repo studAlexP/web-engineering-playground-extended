@@ -1,25 +1,6 @@
 import { useEffect, useState } from 'react';
-import { fetchData } from '../modules/api/fetchUtils';
-import { extractBears } from '../modules/api/bearParser';
-
-const baseUrl = 'https://en.wikipedia.org/w/api.php';
-const title = 'List_of_ursids';
-
-const params = {
-  action: 'parse',
-  page: title,
-  prop: 'wikitext',
-  section: '3',
-  format: 'json',
-  origin: '*',
-};
-
-interface Bear {
-  name: string;
-  binomial: string;
-  image: string;
-  range: string;
-}
+import { fetchBears } from '../modules/api/fetchUtils';
+import type { Bear } from '../types/bear.ts';
 
 const BearList: React.FC = () => {
   const [bears, setBears] = useState<Bear[]>([]);
@@ -27,19 +8,15 @@ const BearList: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   const minimumBears = 0;
+  const pageTitle = 'List of ursids';
 
   useEffect(() => {
     const getBearData = async (): Promise<void> => {
       try {
         setLoading(true);
-        const data = await fetchData(baseUrl, params);
-
-        if (data?.parse?.wikitext != null) {
-          const { wikitext } = data.parse ?? {};
-          if (wikitext != null) {
-            const bearsData = await extractBears(wikitext['*']);
-            setBears(bearsData);
-          }
+        const bearsData = await fetchBears(pageTitle);
+        if (bearsData.length > minimumBears) {
+          setBears(bearsData);
         } else {
           setError('No bear data found.');
         }
