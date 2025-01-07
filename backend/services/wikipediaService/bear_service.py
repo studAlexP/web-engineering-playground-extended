@@ -25,6 +25,7 @@ def fetch_image_url(file_name: str) -> str:
 
     try:
         response = requests.get(base_url, params=image_params)
+        response.raise_for_status()
         data = response.json()
 
         if "query" in data and "pages" in data["query"]:
@@ -38,12 +39,35 @@ def fetch_image_url(file_name: str) -> str:
                     }
                     return image_info[0]["url"]
         else:
-            print("Error: No image found.")
             return "media/urban-bear.jpg"
 
     except Exception as e:
         print(f"Error fetching image URL for {file_name}: {e}")
         return "media/urban-bear.jpg"
+
+
+def fetch_wikitext(page_title: str) -> str:
+    base_url = "https://en.wikipedia.org/w/api.php"
+    params = {
+        "action": "parse",
+        "page": page_title,
+        "format": "json",
+        "prop": "wikitext",
+        "origin": "*",
+    }
+
+    try:
+        response = requests.get(base_url, params=params)
+        response.raise_for_status()
+        data = response.json()
+
+        if "parse" in data and "wikitext" in data["parse"]:
+            return data["parse"]["wikitext"]["*"]
+        else:
+            return ""
+    except Exception as e:
+        print(f"Error fetching wikitext for {page_title}: {e}")
+        return ""
 
 
 def extract_bears_from_wikitext(wikitext: str):
