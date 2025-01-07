@@ -1,83 +1,22 @@
-interface ApiResponse {
-  parse?: {
-    wikitext?: {
-      '*': string;
-    };
-  };
-  query?: {
-    pages?: Record<
-      string,
-      {
-        imageinfo?: Array<{ url: string }>;
-      }
-    >;
-  };
-}
+import type { Bear } from '../../types/bear';
 
-export const fetchData = async (
-  url: string,
-  params: Record<string, string>
-): Promise<ApiResponse | null> => {
+export const fetchBears = async (pageTitle: string): Promise<Bear[]> => {
+  const backendUrl = `http://localhost:5000/bears?page_title=${encodeURIComponent(pageTitle)}`;
+
   try {
-    const fullUrl = `${url}?${new URLSearchParams(params).toString()}`;
-    const response = await fetch(fullUrl);
+    const response = await fetch(backendUrl, {
+      method: 'GET',
+    });
 
     if (!response.ok) {
       console.error(`HTTP error! Status: ${response.status}`);
-      return null;
+      return [];
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- response will always be of type ApiResponse
-    return (await response.json()) as ApiResponse;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Type safety assured through own API
+    return (await response.json()) as Bear[];
   } catch (error) {
-    console.error('Error fetching data:', error);
-    return null;
-  }
-};
-
-interface ImageInfo {
-  url: string;
-}
-
-type Pages = Record<
-  string,
-  {
-    imageinfo?: ImageInfo[];
-  }
->;
-
-export const fetchImageUrl = async (fileName: string): Promise<string> => {
-  const baseUrl = 'https://en.wikipedia.org/w/api.php';
-  const imageParams = {
-    action: 'query',
-    titles: `File:${fileName}`,
-    prop: 'imageinfo',
-    iiprop: 'url',
-    format: 'json',
-    origin: '*',
-  };
-
-  const firstImageNumber = 0;
-
-  try {
-    const data = await fetchData(baseUrl, imageParams);
-
-    if (data?.query?.pages != null) {
-      const pages: Pages = data.query.pages;
-
-      for (const pageId in pages) {
-        const { imageinfo } = pages[pageId] ?? {};
-
-        if (imageinfo != null && imageinfo.length > firstImageNumber) {
-          return imageinfo[firstImageNumber].url;
-        }
-      }
-    }
-
-    console.error('Image not found');
-    return 'media/urban-bear.jpg';
-  } catch (error: unknown) {
-    console.error('Error fetching image URL:', error);
-    return 'media/urban-bear.jpg';
+    console.log('Error fetching bears from backend:', error);
+    return [];
   }
 };
