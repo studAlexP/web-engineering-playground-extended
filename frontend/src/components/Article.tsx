@@ -5,26 +5,28 @@ import Comment from './Comment.tsx';
 import AuthorInfo from './AuthorInfo.tsx';
 import BearMating from './BearMating.tsx';
 import BearList from './BearList.tsx';
-import type { Bear } from '../types/bear.ts';
+import type { BearTableProps } from '../types/bear.ts';
 
-const bearData: Bear[] = [
-  {
-    type: 'Wild',
-    coat: 'Brown or black',
-    size: '1.4 to 2.8 meters',
-    habitat: 'Woods and forests',
-    lifespan: '25 to 28 years',
-    diet: 'Fish, meat, plants',
-  },
-  {
-    type: 'Urban',
-    coat: 'North Face',
-    size: '18 to 22',
-    habitat: 'Condos and coffee shops',
-    lifespan: '20 to 32 years',
-    diet: 'Starbucks, sushi',
-  },
-];
+const bearData: BearTableProps = {
+  bears: [
+    {
+      type: 'Wild',
+      coat: 'Brown or black',
+      size: '1.4 to 2.8 meters',
+      habitat: 'Woods and forests',
+      lifespan: '25 to 28 years',
+      diet: 'Fish, meat, plants',
+    },
+    {
+      type: 'Urban',
+      coat: 'North Face',
+      size: '18 to 22',
+      habitat: 'Condos and coffee shops',
+      lifespan: '20 to 32 years',
+      diet: 'Starbucks, sushi',
+    },
+  ]
+};
 
 function Article(): React.JSX.Element {
   return (
@@ -50,7 +52,7 @@ function Article(): React.JSX.Element {
         encourage different behaviour however, as you'll find out below. The
         below table also gives you some useful facts about bears.
       </p>
-      <BearTable bears={bearData} />
+      <BearTable bears={bearData.bears} />
       <h3>Habitats and Eating habits</h3>
       <p>
         Wild bears eat a variety of meat, fish, fruit, nuts, and other naturally
